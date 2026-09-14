@@ -1,0 +1,236 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0f172a;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Responsive Ad Container Styles */
+.ad-container {
+    width: 100%;
+    max-width: 800px;
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px dashed #475569;
+    border-radius: 8px;
+    margin: 8px 0;
+    padding: 6px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+.top-ad {
+    height: 60px;
+}
+
+.transition-ad {
+    height: 120px;
+    margin: 15px 0;
+    width: 90%;
+}
+
+.ad-badge {
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    font-size: 9px;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+
+.ad-content-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Game Outer Wrapper */
+#gameWrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 450px;
+    background: #000;
+    border-radius: 12px;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* UI Overlays */
+.overlay-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+.center-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(6px);
+    z-index: 10;
+    padding: 20px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Text & Buttons */
+.game-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.game-over-title {
+    font-size: 2.2rem;
+    color: #ef4444;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.controls-guide {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.primary-btn, .secondary-btn {
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    margin: 6px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.primary-btn:active {
+    transform: scale(0.96);
+}
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* HUD Overlay */
+#hud {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 8;
+    pointer-events: none;
+}
+
+.hud-item {
+    background: rgba(15, 23, 42, 0.6);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.powerup-status {
+    background: rgba(59, 130, 246, 0.8);
+    color: white;
+}
+
+.icon-btn {
+    pointer-events: auto;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Mobile Touch Controls Layer */
+.mobile-controls-layer {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 7;
+}
+
+.touch-action-btn {
+    pointer-events: auto;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 800;
+    font-size: 0.8rem;
+    backdrop-filter: blur(4px);
+}
+
+.touch-action-btn:active {
+    background: rgba(59, 130, 246, 0.5);
+}
+
+@media (min-width: 768px) {
+    .mobile-controls-layer {
+        display: none;
+    }
+}
