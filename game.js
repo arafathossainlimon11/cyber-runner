@@ -10,7 +10,7 @@ const STATE_GAMEOVER = 'GAMEOVER';
 
 let gameState = STATE_START;
 
-// Canvas Scaling setup
+// Canvas Fixed Resolution setup
 function resizeCanvas() {
     canvas.width = 800;
     canvas.height = 450;
@@ -18,15 +18,15 @@ function resizeCanvas() {
 resizeCanvas();
 
 // Global Variables
-let gameSpeed = 5;
-let baseSpeed = 5;
+let gameSpeed = 7.5;
+let baseSpeed = 7.5;
 let distance = 0;
 let score = 0;
-let highScore = parseInt(localStorage.getItem('cyber_runner_highscore')) || 0;
+let highScore = Math.floor(parseFloat(localStorage.getItem('cyber_runner_highscore')) || 0);
 let frameCount = 0;
 
 // Environment / Day-Night Cycle
-let timeOfDay = 0; // 0 to 1
+let timeOfDay = 0;
 
 // UI Elements
 const distVal = document.getElementById('distVal');
@@ -57,13 +57,13 @@ const groundY = 370;
 
 // Fictional Runner Character Object
 const player = {
-    x: 100,
+    x: 90,
     y: groundY - 50,
     width: 35,
     height: 50,
     velocityY: 0,
-    gravity: 0.65,
-    jumpForce: -12.5,
+    gravity: 0.7,
+    jumpForce: -11.5,
     isGrounded: false,
     jumpCount: 0,
     maxJumps: 2,
@@ -103,15 +103,22 @@ const player = {
             this.isSliding = true;
             this.height = 25;
             this.y = groundY - 25;
-            this.slideTimer = 45; // Frames for slide duration
+            this.slideTimer = 35;
         }
     },
 
     update() {
-        // Physics logic
+        // Physics logic with top ceiling bound lock
         this.velocityY += this.gravity;
         this.y += this.velocityY;
 
+        // Prevent character from jumping out of the canvas screen top
+        if (this.y < 15) {
+            this.y = 15;
+            this.velocityY = 0;
+        }
+
+        // Ground landing check
         if (this.y + this.height >= groundY) {
             this.y = groundY - this.height;
             this.velocityY = 0;
@@ -143,7 +150,12 @@ const player = {
             }
         }
 
-        this.animFrame += 0.2;
+        this.animFrame += 0.25;
+
+        // Running dust particles
+        if (this.isGrounded && frameCount % 6 === 0) {
+            createParticles(this.x, groundY - 4, '#94a3b8', 2);
+        }
     },
 
     draw() {
@@ -164,33 +176,26 @@ const player = {
             ctx.stroke();
         }
 
-        // Draw Fictional Cyber Runner Character
-        ctx.fillStyle = '#38bdf8'; // Cyan Body
+        // Draw Character
+        ctx.fillStyle = '#38bdf8';
         if (this.isSliding) {
-            // Sliding pose
             ctx.fillRect(this.x, this.y, this.width + 10, this.height);
-            // Visor
             ctx.fillStyle = '#ff0055';
             ctx.fillRect(this.x + 25, this.y + 4, 10, 6);
         } else {
-            // Standing/Running pose
-            ctx.fillRect(this.x + 5, this.y + 12, 25, 25); // Torso
-            // Visor / Head
+            ctx.fillRect(this.x + 5, this.y + 12, 25, 25);
             ctx.fillStyle = '#0f172a';
             ctx.fillRect(this.x + 8, this.y, 20, 14);
             ctx.fillStyle = '#ff0055';
             ctx.fillRect(this.x + 18, this.y + 3, 10, 5);
 
-            // Animated Running Legs
             ctx.strokeStyle = '#38bdf8';
             ctx.lineWidth = 4;
             let legOffset = Math.sin(this.animFrame) * 12;
             
             ctx.beginPath();
-            // Left Leg
             ctx.moveTo(this.x + 12, this.y + 37);
             ctx.lineTo(this.x + 12 - legOffset, this.y + 50);
-            // Right Leg
             ctx.moveTo(this.x + 24, this.y + 37);
             ctx.lineTo(this.x + 24 + legOffset, this.y + 50);
             ctx.stroke();
@@ -213,18 +218,18 @@ class Obstacle {
         this.type = Math.random() < 0.5 ? 'ground' : (Math.random() < 0.8 ? 'flying' : 'moving');
         
         if (this.type === 'ground') {
-            this.width = 30 + Math.random() * 20;
+            this.width = 30 + Math.random() * 15;
             this.height = 35 + Math.random() * 15;
             this.y = groundY - this.height;
         } else if (this.type === 'flying') {
             this.width = 40;
             this.height = 25;
-            this.y = groundY - 75; // Requires sliding or precise jump
+            this.y = groundY - 75;
         } else {
             this.width = 30;
             this.height = 30;
-            this.y = groundY - 35;
-            this.moveY = 1;
+            this.y = groundY - 40;
+            this.moveY = 1.2;
         }
     }
 
@@ -232,15 +237,13 @@ class Obstacle {
         this.x -= gameSpeed;
         if (this.type === 'moving') {
             this.y += this.moveY;
-            if (this.y < groundY - 70 || this.y > groundY - 30) this.moveY *= -1;
+            if (this.y < groundY - 75 || this.y > groundY - 30) this.moveY *= -1;
         }
     }
 
     draw() {
         ctx.fillStyle = this.type === 'ground' ? '#ef4444' : (this.type === 'flying' ? '#f97316' : '#a855f7');
         ctx.fillRect(this.x, this.y, this.width, this.height);
-        
-        // Hazard Markings
         ctx.fillStyle = '#000';
         ctx.fillRect(this.x + 4, this.y + 4, 6, 6);
     }
@@ -251,7 +254,6 @@ class Coin {
         this.x = x;
         this.y = y;
         this.radius = 10;
-        this.collected = false;
     }
 
     update() {
@@ -275,7 +277,6 @@ class Powerup {
         this.y = groundY - 80;
         this.type = Math.random() < 0.5 ? 'shield' : 'speed';
         this.size = 22;
-        this.collected = false;
     }
 
     update() {
@@ -286,7 +287,7 @@ class Powerup {
         ctx.fillStyle = this.type === 'shield' ? '#38bdf8' : '#eab308';
         ctx.fillRect(this.x, this.y, this.size, this.size);
         ctx.fillStyle = '#fff';
-        ctx.font = '10px sans-serif';
+        ctx.font = 'bold 11px sans-serif';
         ctx.fillText(this.type === 'shield' ? 'S' : 'B', this.x + 7, this.y + 15);
     }
 }
@@ -311,7 +312,7 @@ function updateParticles() {
         let p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= 0.03;
+        p.alpha -= 0.04;
         if (p.alpha <= 0) {
             particles.splice(i, 1);
         }
@@ -331,25 +332,22 @@ function drawParticles() {
 // Parallax Background & Day/Night Renderer
 function drawBackground() {
     timeOfDay += 0.0005;
-    let cycle = (Math.sin(timeOfDay) + 1) / 2; // Normalize 0 to 1
+    let cycle = (Math.sin(timeOfDay) + 1) / 2;
 
-    // Sky Gradient Transition
     let skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     if (cycle > 0.5) {
-        // Day
         skyGradient.addColorStop(0, '#38bdf8');
         skyGradient.addColorStop(1, '#bae6fd');
     } else {
-        // Night
         skyGradient.addColorStop(0, '#0f172a');
         skyGradient.addColorStop(1, '#1e1b4b');
     }
     ctx.fillStyle = skyGradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Parallax Layer: Distant Mountains
+    // Parallax Layer
     ctx.fillStyle = cycle > 0.5 ? '#94a3b8' : '#334155';
-    let mountainOffset = (frameCount * 0.5) % 400;
+    let mountainOffset = (frameCount * 0.8) % 400;
     for (let i = -1; i < 3; i++) {
         ctx.beginPath();
         ctx.moveTo(i * 400 - mountainOffset, groundY);
@@ -361,29 +359,29 @@ function drawBackground() {
     // Ground Layer
     ctx.fillStyle = '#1e293b';
     ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
-    ctx.fillStyle = '#22c55e'; // Green top border
+    ctx.fillStyle = '#22c55e';
     ctx.fillRect(0, groundY, canvas.width, 6);
 }
 
 // Spawning Logic
 function handleSpawning() {
-    if (frameCount % 110 === 0) {
+    if (frameCount % 90 === 0) {
         obstacles.push(new Obstacle());
     }
 
-    if (frameCount % 160 === 0) {
-        let coinY = groundY - (Math.random() * 80 + 30);
+    if (frameCount % 130 === 0) {
+        let coinY = groundY - (Math.random() * 70 + 30);
         for (let i = 0; i < 3; i++) {
             coins.push(new Coin(canvas.width + (i * 25), coinY));
         }
     }
 
-    if (frameCount % 450 === 0) {
+    if (frameCount % 400 === 0) {
         powerups.push(new Powerup());
     }
 }
 
-// Collision Detection (AABB)
+// Collision Detection
 function checkCollisions() {
     // Obstacles
     for (let i = obstacles.length - 1; i >= 0; i--) {
@@ -432,7 +430,7 @@ function checkCollisions() {
             soundManager.playPowerup();
             if (p.type === 'shield') {
                 player.shieldActive = true;
-                player.shieldTimer = 300; // ~5 seconds
+                player.shieldTimer = 300;
             } else if (p.type === 'speed') {
                 player.speedBoostActive = true;
                 player.speedBoostTimer = 240;
@@ -450,7 +448,7 @@ function startGame() {
     gameState = STATE_PLAYING;
     distance = 0;
     score = 0;
-    baseSpeed = 5;
+    baseSpeed = 7.5;
     gameSpeed = baseSpeed;
     frameCount = 0;
     
@@ -466,7 +464,7 @@ function startGame() {
     gameOverScreen.classList.add('hidden');
     hud.classList.remove('hidden');
 
-    highVal.innerText = highScore;
+    highVal.innerText = Math.floor(highScore);
 }
 
 function togglePause() {
@@ -483,29 +481,30 @@ function triggerGameOver() {
     soundManager.playCollision();
     gameState = STATE_GAMEOVER;
 
-    if (score > highScore) {
-        highScore = score;
+    let finalIntScore = Math.floor(score);
+    if (finalIntScore > highScore) {
+        highScore = finalIntScore;
         localStorage.setItem('cyber_runner_highscore', highScore);
     }
 
     document.getElementById('finalDist').innerText = Math.floor(distance);
-    document.getElementById('finalScore').innerText = score;
-    document.getElementById('finalHighScore').innerText = highScore;
+    document.getElementById('finalScore').innerText = finalIntScore;
+    document.getElementById('finalHighScore').innerText = Math.floor(highScore);
 
     hud.classList.add('hidden');
     gameOverScreen.classList.remove('hidden');
 }
 
-// Main Game Loop
+// Main Loop
 function update() {
     if (gameState !== STATE_PLAYING) return;
 
     frameCount++;
-    distance += gameSpeed * 0.05;
+    distance += gameSpeed * 0.06;
     score += 0.1;
 
-    // Difficulty scaling
-    if (frameCount % 500 === 0) {
+    // Smooth difficulty scaling
+    if (frameCount % 450 === 0) {
         baseSpeed += 0.4;
         if (!player.speedBoostActive) gameSpeed = baseSpeed;
     }
@@ -513,7 +512,6 @@ function update() {
     player.update();
     handleSpawning();
 
-    // Update Obstacles & Collectibles
     obstacles.forEach((obs, index) => {
         obs.update();
         if (obs.x + obs.width < 0) obstacles.splice(index, 1);
@@ -532,9 +530,10 @@ function update() {
     updateParticles();
     checkCollisions();
 
-    // Update HUD Text
+    // Clean Integer HUD updates
     distVal.innerText = Math.floor(distance);
     scoreVal.innerText = Math.floor(score);
+    highVal.innerText = Math.floor(highScore);
 
     if (player.shieldActive || player.speedBoostActive) {
         activePowerup.classList.remove('hidden');
@@ -549,7 +548,6 @@ function render() {
 
     drawBackground();
 
-    // Draw entities
     obstacles.forEach(obs => obs.draw());
     coins.forEach(c => c.draw());
     powerups.forEach(p => p.draw());
@@ -563,7 +561,7 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Input Controllers
+// Inputs
 window.addEventListener('keydown', (e) => {
     if (gameState !== STATE_PLAYING) return;
     if (e.code === 'Space' || e.code === 'ArrowUp') {
@@ -573,7 +571,6 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// Mobile Controls
 document.getElementById('mobileJumpBtn').addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (gameState === STATE_PLAYING) player.jump();
@@ -584,7 +581,7 @@ document.getElementById('mobileSlideBtn').addEventListener('touchstart', (e) => 
     if (gameState === STATE_PLAYING) player.slide();
 });
 
-// Touch Gestures on Canvas
+// Canvas touch swipe
 let touchStartY = 0;
 canvas.addEventListener('touchstart', (e) => {
     touchStartY = e.touches[0].clientY;
@@ -596,14 +593,13 @@ canvas.addEventListener('touchend', (e) => {
 
     if (gameState === STATE_PLAYING) {
         if (diffY < -30) {
-            player.jump(); // Swipe Up
+            player.jump();
         } else if (diffY > 30) {
-            player.slide(); // Swipe Down
+            player.slide();
         } else {
-            player.jump(); // Tap
+            player.jump();
         }
     }
 });
 
-// Start Game Engine Loop
 requestAnimationFrame(gameLoop);
