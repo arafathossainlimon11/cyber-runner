@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cyber Runner - Endless Runner Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Advertisement Banner Placeholder (No ads during gameplay) -->
+    <div id="topAdArea" class="ad-container top-ad">
+        <span class="ad-badge">ADVERTISEMENT</span>
+        <div class="ad-content-placeholder">
+            <p>Responsive Top Banner Ad Area</p>
+        </div>
+    </div>
+
+    <!-- Main Game Container -->
+    <div id="gameWrapper">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Heads-Up Display (HUD) -->
+        <div id="hud" class="overlay-screen hidden">
+            <div class="hud-item">দূরত্ব: <span id="distVal">0</span>m</div>
+            <div class="hud-item">স্কোর: <span id="scoreVal">0</span></div>
+            <div class="hud-item">হাই স্কোর: <span id="highVal">0</span></div>
+            <div id="activePowerup" class="hud-item powerup-status hidden"></div>
+            <button id="pauseBtn" class="icon-btn">⏸️</button>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="overlay-screen center-screen">
+            <h1 class="game-title">CYBER RUNNER</h1>
+            <p class="subtitle">যত দূরে পারো দৌড়াও এবং বাধা এড়িয়ে চলো!</p>
+            <div class="controls-guide">
+                <p><strong>Desktop Controls:</strong> Space/Up = Jump (Double Tap for Double Jump), Down = Slide</p>
+                <p><strong>Mobile Controls:</strong> Screen Tap/Swipe Up = Jump, Swipe Down = Slide</p>
+            </div>
+            <button id="startBtn" class="primary-btn">গেম শুরু করুন</button>
+            <button id="soundToggleBtn" class="secondary-btn">সাউন্ড: অন</button>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pauseScreen" class="overlay-screen center-screen hidden">
+            <h2>গেম সাময়িক স্থগিত (PAUSED)</h2>
+            <button id="resumeBtn" class="primary-btn">পুনরায় শুরু করুন</button>
+            <button id="restartPauseBtn" class="secondary-btn">নতুন করে শুরু</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="overlay-screen center-screen hidden">
+            <h2 class="game-over-title">GAME OVER</h2>
+            <div class="final-stats">
+                <p>মোট দূরত্ব: <span id="finalDist">0</span>m</p>
+                <p>মোট স্কোর: <span id="finalScore">0</span></p>
+                <p>সর্বোচ্চ স্কোর: <span id="finalHighScore">0</span></p>
+            </div>
+
+            <!-- Natural Transition Game Over Ad Placeholder -->
+            <div id="gameOverAdArea" class="ad-container transition-ad">
+                <span class="ad-badge">ADVERTISEMENT</span>
+                <div class="ad-content-placeholder">
+                    <p>Game Over Screen Ad Unit</p>
+                </div>
+            </div>
+
+            <button id="restartBtn" class="primary-btn">আবার খেলুন</button>
+        </div>
+
+        <!-- Touch Controls Layer (Mobile On-Screen Buttons) -->
+        <div id="mobileControls" class="mobile-controls-layer">
+            <button id="mobileSlideBtn" class="touch-action-btn">SLIDE</button>
+            <button id="mobileJumpBtn" class="touch-action-btn">JUMP</button>
+        </div>
+    </div>
+
+    <script src="sound.js"></script>
+    <script src="game.js"></script>
+</body>
+  </html>
