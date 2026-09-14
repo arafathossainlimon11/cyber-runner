@@ -4,40 +4,54 @@
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-    background-color: #0f172a;
+    background-color: #0b0f19;
     color: #ffffff;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
 }
 
-/* Responsive Ad Container Styles */
+.game-container-outer {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px;
+}
+
+/* Ad Containers */
 .ad-container {
     width: 100%;
-    max-width: 800px;
-    background: rgba(30, 41, 59, 0.7);
+    background: rgba(30, 41, 59, 0.8);
     border: 1px dashed #475569;
     border-radius: 8px;
-    margin: 8px 0;
-    padding: 6px;
     text-align: center;
     position: relative;
     z-index: 5;
+    flex-shrink: 0;
 }
 
 .top-ad {
-    height: 60px;
+    height: 55px;
+}
+
+.bottom-ad {
+    height: 65px;
+    margin-top: 4px;
 }
 
 .transition-ad {
-    height: 120px;
-    margin: 15px 0;
+    height: 100px;
+    margin: 12px 0;
     width: 90%;
 }
 
@@ -45,7 +59,7 @@ body {
     position: absolute;
     top: 2px;
     left: 6px;
-    font-size: 9px;
+    font-size: 8px;
     color: #94a3b8;
     letter-spacing: 1px;
 }
@@ -56,7 +70,7 @@ body {
     align-items: center;
     height: 100%;
     color: #64748b;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -64,18 +78,20 @@ body {
 #gameWrapper {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    height: 450px;
+    flex-grow: 1;
     background: #000;
     border-radius: 12px;
-    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 canvas {
     width: 100%;
     height: 100%;
     display: block;
+    object-fit: contain;
 }
 
 /* UI Overlays */
@@ -93,10 +109,10 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(15, 23, 42, 0.88);
-    backdrop-filter: blur(6px);
+    background: rgba(11, 15, 25, 0.92);
+    backdrop-filter: blur(8px);
     z-index: 10;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
 }
 
@@ -106,53 +122,53 @@ canvas {
 
 /* Text & Buttons */
 .game-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 900;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .game-over-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: #ef4444;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .subtitle {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: #cbd5e1;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .controls-guide {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #94a3b8;
-    margin-bottom: 20px;
-    line-height: 1.5;
+    margin-bottom: 16px;
+    line-height: 1.4;
 }
 
 .primary-btn, .secondary-btn {
-    padding: 12px 28px;
-    font-size: 1rem;
+    padding: 10px 24px;
+    font-size: 0.95rem;
     font-weight: 700;
     border-radius: 50px;
     border: none;
     cursor: pointer;
-    margin: 6px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    margin: 4px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .primary-btn {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: #fff;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .primary-btn:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
 }
 
 .secondary-btn {
@@ -164,10 +180,9 @@ canvas {
 /* HUD Overlay */
 #hud {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    height: auto;
+    top: 8px;
+    left: 8px;
+    right: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -176,26 +191,26 @@ canvas {
 }
 
 .hud-item {
-    background: rgba(15, 23, 42, 0.6);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.75rem;
     font-weight: 700;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .powerup-status {
-    background: rgba(59, 130, 246, 0.8);
+    background: rgba(59, 130, 246, 0.85);
     color: white;
 }
 
 .icon-btn {
     pointer-events: auto;
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(15, 23, 42, 0.75);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -203,9 +218,9 @@ canvas {
 /* Mobile Touch Controls Layer */
 .mobile-controls-layer {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
     display: flex;
     justify-content: space-between;
     pointer-events: none;
@@ -214,23 +229,24 @@ canvas {
 
 .touch-action-btn {
     pointer-events: auto;
-    width: 75px;
-    height: 75px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.4);
     color: white;
     font-weight: 800;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     backdrop-filter: blur(4px);
+    touch-action: manipulation;
 }
 
 .touch-action-btn:active {
-    background: rgba(59, 130, 246, 0.5);
+    background: rgba(59, 130, 246, 0.6);
 }
 
 @media (min-width: 768px) {
-    .mobile-controls-layer {
-        display: none;
+    .game-container-outer {
+        max-width: 800px;
     }
 }
