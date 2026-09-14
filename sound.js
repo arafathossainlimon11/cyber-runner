@@ -1,9 +1,8 @@
-// Sound System built with HTML5 Web Audio API (Zero External Dependencies)
+// Sound System with Web Audio API
 class SoundSystem {
     constructor() {
         this.ctx = null;
         this.isMuted = false;
-        this.bgmTimer = null;
     }
 
     init() {
@@ -18,8 +17,8 @@ class SoundSystem {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.15);
+        osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(420, this.ctx.currentTime + 0.15);
         gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
         osc.connect(gain);
@@ -33,9 +32,9 @@ class SoundSystem {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
-        osc.frequency.setValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
-        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(987.77, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(1318.51, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -48,8 +47,8 @@ class SoundSystem {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.25);
+        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(850, this.ctx.currentTime + 0.25);
         gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
         osc.connect(gain);
@@ -63,7 +62,7 @@ class SoundSystem {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(130, this.ctx.currentTime);
         osc.frequency.linearRampToValueAtTime(30, this.ctx.currentTime + 0.3);
         gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
